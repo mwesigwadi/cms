@@ -3,30 +3,34 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "version.json": "f5c7d8c735da5379f1602ed70057bfcb",
-"index.html": "93857fd294972567a7062032af0ab811",
-"/": "93857fd294972567a7062032af0ab811",
-"main.dart.js": "1eacde09e35d0e1e1aea1f84fb43f5d8",
-"flutter.js": "eb2682e33f25cd8f1fc59011497c35f8",
+  "assets/AssetManifest.json": "9e43dcd43eebd93b26cc22271323ab4b",
+"assets/assets/images/card.jpg": "92e7b18c4e27b9f8851935ebea24b3d4",
+"assets/assets/images/grass.jpg": "4f857a9d4f0b69b00ae995c568c99497",
+"assets/assets/images/image_placeholder.png": "c8b5d9a464d4288e9a951d3728772236",
+"assets/assets/images/logo.jpeg": "e8d55cf2c902c8576f1faea8aabb273a",
+"assets/assets/images/player.png": "5cddf9b82d8c033812b8f5db043a4215",
+"assets/assets/images/profile_image.jpeg": "7fb162c5c2f762621ec029299dd547b2",
+"assets/assets/images/soccer.jpg": "cc88aab04dbe0fbf3d0237bf5e46d2b3",
+"assets/assets/images/user.jpg": "e50e46d165528a7f0bb518c899babedd",
+"assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
+"assets/fonts/MaterialIcons-Regular.otf": "e7069dfd19b331be16bed984668fe080",
+"assets/NOTICES": "65a5961134acb34c8749ef8704c7aec0",
+"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
+"canvaskit/canvaskit.js": "97937cb4c2c2073c968525a3e08c86a3",
+"canvaskit/canvaskit.wasm": "3de12d898ec208a5f31362cc00f09b9e",
+"canvaskit/profiling/canvaskit.js": "c21852696bc1cc82e8894d851c01921a",
+"canvaskit/profiling/canvaskit.wasm": "371bc4e204443b0d5e774d64a046eb99",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
+"flutter.js": "a85fcf6324d3c4d3ae3be1ae4931e9c5",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
+"icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
-"icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
+"index.html": "9d8ee19cb316b2ff3960983a08026b97",
+"/": "9d8ee19cb316b2ff3960983a08026b97",
+"main.dart.js": "eb158a11cf9cf3e745cb4e1c1b09342d",
 "manifest.json": "63617610a338e79c967d8c3c155ff84b",
-"assets/AssetManifest.json": "c03ef01058951dc9a4b8ba09f9c56ac2",
-"assets/NOTICES": "44e517f2f3e1cc7e4ad981ebeed52a3b",
-"assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
-"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
-"assets/fonts/MaterialIcons-Regular.otf": "95db9098c58fd6db106f1116bae85a0b",
-"assets/assets/images/hyde_logo.png": "408c830e3c9c4f2d19541f0f12551f26",
-"assets/assets/images/logo.png": "f238405353bf9fb5af5adeeee009ec06",
-"assets/assets/images/hyde_logo.jpeg": "7fb162c5c2f762621ec029299dd547b2",
-"assets/assets/images/logo.jpeg": "e8d55cf2c902c8576f1faea8aabb273a",
-"canvaskit/canvaskit.js": "c2b4e5f3d7a3d82aed024e7249a78487",
-"canvaskit/profiling/canvaskit.js": "ae2949af4efc61d28a4a80fffa1db900",
-"canvaskit/profiling/canvaskit.wasm": "95e736ab31147d1b2c7b25f11d4c32cd",
-"canvaskit/canvaskit.wasm": "4b83d89d9fecbea8ca46f2f760c5a9ba"
+"version.json": "f5c7d8c735da5379f1602ed70057bfcb"
 };
 
 // The application shell files that are downloaded before a service worker can
@@ -34,7 +38,6 @@ const RESOURCES = {
 const CORE = [
   "main.dart.js",
 "index.html",
-"assets/NOTICES",
 "assets/AssetManifest.json",
 "assets/FontManifest.json"];
 // During install, the TEMP cache is populated with the application shell files.
@@ -133,9 +136,11 @@ self.addEventListener("fetch", (event) => {
     .then((cache) =>  {
       return cache.match(event.request).then((response) => {
         // Either respond with the cached resource, or perform a fetch and
-        // lazily populate the cache.
+        // lazily populate the cache only if the resource was successfully fetched.
         return response || fetch(event.request).then((response) => {
-          cache.put(event.request, response.clone());
+          if (response && Boolean(response.ok)) {
+            cache.put(event.request, response.clone());
+          }
           return response;
         });
       })
